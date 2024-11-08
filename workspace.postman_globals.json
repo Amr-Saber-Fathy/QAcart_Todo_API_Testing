@@ -1,0 +1,21 @@
+{
+	"id": "7442b714-24c8-4ffe-8241-acf1bd16469d",
+	"values": [
+		{
+			"key": "email",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "userFirstName",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2024-10-30T16:00:14.539Z",
+	"_postman_exported_using": "Postman/11.18.0"
+}

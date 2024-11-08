@@ -1,0 +1,1 @@
+newman run Todo_QACart.postman_collection.json --environment stage.postman_environment.json --globals workspace.postman_globals.json --reporters cli,html --reporter-html-export Todo_QACart_Report.html

@@ -1,0 +1,3353 @@
+{
+	"info": {
+		"_postman_id": "85b84171-a435-43ad-be2b-876abdc0ab11",
+		"name": "Todo_QACart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34714519"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Registration",
+					"item": [
+						{
+							"name": "1_Happy_Case",
+							"item": [
+								{
+									"name": "registeration",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.globals.set(\"email\",\r",
+													"            `${Math.random().toString(36).substring(7)}@example.com`);\r",
+													"\r",
+													"pm.globals.set(\"userFirstName\", `${Math.random().toString(36).substring(7)}`);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user firstName\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.firstName).to.eql(pm.globals.get(\"userFirstName\"));\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"access_token\": { \"type\": \"string\" },\r",
+													"        \"userID\": { \"type\": \"string\" },\r",
+													"        \"firstName\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"access_token\", \"userID\", \"firstName\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Created\", function () {\r",
+													"    pm.response.to.have.status(\"Created\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"{{userFirstName}}\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Valid Data for a happy scenario"
+						},
+						{
+							"name": "2_Email_Validation",
+							"item": [
+								{
+									"name": "registeration_Duplicate_email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"Email is already exists in the Database\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Empty_email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"email\\\" is not allowed to be empty\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Invalid_email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"email\\\" must be a valid email\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"ali13Mohamedail.com\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Validation on Email:\n\n1- Existing Email.\n\n2- Empty Email.\n\n3- Invalid Email (no @)."
+						},
+						{
+							"name": "3_Password_Validation",
+							"item": [
+								{
+									"name": "registeration_Empty_password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"password\\\" is not allowed to be empty\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Invalid_password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"password\\\" length must be at least 8 characters long\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123459\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Invalid_password2",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"password\\\" length must be at max 20 characters long\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123459254502023165165102154897978945615151asdfghjkrtyuioxcvbnmtyuiobnm789456321454878798513-*/+3220.32584fdre2159-=[p['ii\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Password Validation:\n\n1- Empty password.\n\n2- Password length less than 8.\n\n3- Max capacity for password."
+						},
+						{
+							"name": "4_Name_Validation",
+							"item": [
+								{
+									"name": "registeration_Empty_firstName",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"firstName\\\" is not allowed to be empty\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Invalid_firstName_Length",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"firstName\\\" length must be at least 2 characters long\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"A\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Invalid_firstName_specialCharacters",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"firstName\\\" must not contain sprcial characters\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"A*-\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Invalid_firstName_Numbers",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"firstName\\\" must not contain numbers\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"1234\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Empty_lastName",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"lastName\\\" is not allowed to be empty\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Invalid_lastName_Length",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"lastName\\\" length must be at least 2 characters long\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"M\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Invalid_lastName_specialCharacters",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"lastName\\\" must not contain sprcial characters\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"M/-+9\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "registeration_Invalid_lastName_specialCharacters Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"lastName\\\" must not contain numbers\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"65487\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "First Name and Last Name Validation:\n\n1- Empty Field.\n\n2- Name length less than 2."
+						}
+					],
+					"description": "Registration Test Cases"
+				},
+				{
+					"name": "Login",
+					"item": [
+						{
+							"name": "1_Happy_case",
+							"item": [
+								{
+									"name": "login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"token\", data.access_token);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user firstName\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.firstName).to.eql(\"Ali\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"access_token\": { \"type\": \"string\" },\r",
+													"        \"userID\": { \"type\": \"string\" },\r",
+													"        \"firstName\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"access_token\", \"userID\", \"firstName\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is OK\", function () {\r",
+													"    pm.response.to.have.status(\"OK\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"ali13Mohamed@gmail.com\",\r\n    \"password\": \"123456789\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/login",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "2_Email_Validation",
+							"item": [
+								{
+									"name": "login_Empty_email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"token\", data.access_token);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user firstName\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"Email must not be empty\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"\",\r\n    \"password\": \"123456789\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/login",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "login_Wrong_email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"token\", data.access_token);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user firstName\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"We could not find the email in the database\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"aliMohamed@gmail.com\",\r\n    \"password\": \"123456789\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/login",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "login_Invalid_email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"token\", data.access_token);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check user firstName\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"Please Enter a valid Email\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"ali13Mohamedgmail.com\",\r\n    \"password\": \"123456789\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/login",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "3_Password_Validation",
+							"item": [
+								{
+									"name": "login_Empty_password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"token\", data.access_token);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"Please Fill a correct Password\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"ali13Mohamed@gmail.com\",\r\n    \"password\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/login",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "login_Wrong_password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"token\", data.access_token);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 401\", function () {\r",
+													"    pm.response.to.have.status(401);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"The email and password combination is not correct, please fill a correct email and password\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Unauthorized\", function () {\r",
+													"    pm.response.to.have.status(\"Unauthorized\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"ali13Mohamed@gmail.com\",\r\n    \"password\": \"Test145698\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/login",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "login_Invalid_password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"token\", data.access_token);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check Error Message\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"Please Fill a correct Password\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"ali13Mohamed@gmail.com\",\r\n    \"password\": \"Test123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/login",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					],
+					"description": "Login Test Cases"
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Tasks with Auth",
+					"item": [
+						{
+							"name": "Add_Tasks",
+							"item": [
+								{
+									"name": "registeration",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.globals.set(\"email\",\r",
+													"            `${Math.random().toString(36).substring(7)}@example.com`);\r",
+													"\r",
+													"pm.globals.set(\"userFirstName\", `${Math.random().toString(36).substring(7)}`);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"token\", data.access_token);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"123456789\",\r\n    \"firstName\": \"{{userFirstName}}\",\r\n    \"lastName\": \"Mohamed\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/users/register",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "AddTask",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"task_id\", data._id);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.item).to.eql(\"Automation Testing\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"isCompleted\": { \"type\": \"boolean\" },\r",
+													"        \"_id\": { \"type\": \"string\" },\r",
+													"        \"item\": { \"type\": \"string\" },\r",
+													"        \"userID\": { \"type\": \"string\" },\r",
+													"        \"createdAt\": { \"type\": \"string\" },\r",
+													"        \"__v\": { \"type\": \"integer\" }\r",
+													"    },\r",
+													"    \"required\": [\"isCompleted\", \"_id\", \"item\", \"userID\", \"createdAt\", \"__v\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Created\", function () {\r",
+													"    pm.response.to.have.status(\"Created\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"Automation Testing\",\r\n    \"isCompleted\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "AddTask_Empty",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"task_id\", data._id);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"item\\\" is not allowed to be empty\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"\",\r\n    \"isCompleted\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "AddTask_Invalid",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"task_id\", data._id);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"item\\\" length must be at least 3 characters long\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"aa\",\r\n    \"isCompleted\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "AddTask_required_item",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"task_id\", data._id);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"item\\\" is required\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"isCompleted\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "AddTask_InvalidType_item",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"task_id\", data._id);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"item\\\" must be a string\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": 5,\r\n    \"isCompleted\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "AddTask_InvalidSpaces",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"task_id\", data._id);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"item\\\" must not start with blank spaces\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"   \",\r\n    \"isCompleted\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "AddTask_required_isCompletedField",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"task_id\", data._id);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"isCompleted\\\" is required\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"Testing\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "AddTask_Invalid_isCompletedField",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"task_id\", data._id);\r",
+													"\r",
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"isCompleted\\\" must be a boolean\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"Testing\",\r\n    \"isCompleted\" : 0\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "CompleteTask",
+							"item": [
+								{
+									"name": "AddTask",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var data = pm.response.json();\r",
+													"\r",
+													"pm.environment.set(\"task_id\", data._id);\r",
+													"\r",
+													"pm.environment.set(\"task_name\", data.item);\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"Automation Testing\",\r\n    \"isCompleted\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "CompleteTask",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.item).to.eql(pm.environment.get(\"task_name\"));\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"isCompleted\": { \"type\": \"boolean\" },\r",
+													"        \"_id\": { \"type\": \"string\" },\r",
+													"        \"item\": { \"type\": \"string\" },\r",
+													"        \"userID\": { \"type\": \"string\" },\r",
+													"        \"createdAt\": { \"type\": \"string\" },\r",
+													"        \"__v\": { \"type\": \"integer\" }\r",
+													"    },\r",
+													"    \"required\": [\"isCompleted\", \"_id\", \"item\", \"userID\", \"createdAt\", \"__v\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is OK\", function () {\r",
+													"    pm.response.to.have.status(\"OK\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"Automation Testing\",\r\n    \"isCompleted\": true\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks/{{task_id}}",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks",
+												"{{task_id}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "unCompleteTask",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.item).to.eql(pm.environment.get(\"task_name\"));\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"isCompleted\": { \"type\": \"boolean\" },\r",
+													"        \"_id\": { \"type\": \"string\" },\r",
+													"        \"item\": { \"type\": \"string\" },\r",
+													"        \"userID\": { \"type\": \"string\" },\r",
+													"        \"createdAt\": { \"type\": \"string\" },\r",
+													"        \"__v\": { \"type\": \"integer\" }\r",
+													"    },\r",
+													"    \"required\": [\"isCompleted\", \"_id\", \"item\", \"userID\", \"createdAt\", \"__v\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is OK\", function () {\r",
+													"    pm.response.to.have.status(\"OK\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"Automation Testing\",\r\n    \"isCompleted\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks/{{task_id}}",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks",
+												"{{task_id}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "CompleteTask_ChangingTaskName",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"You can't change task name\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"Automation Testing2\",\r\n    \"isCompleted\": true\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks/{{task_id}}",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks",
+												"{{task_id}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "CompleteTask_required_isCompleted",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"/*************Test Cases************/\r",
+													"pm.test(\"Status code is 400\", function () {\r",
+													"    pm.response.to.have.status(400);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Check item Name\", function () {\r",
+													"    var jsonData = pm.response.json();\r",
+													"    pm.expect(jsonData.message).to.eql(\"\\\"isCompleted\\\" is required\");\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Content-Type is present\", function () {\r",
+													"    pm.response.to.have.header(\"Content-Type\");\r",
+													"});\r",
+													"\r",
+													"// Define the expected schema\r",
+													"var schema = {\r",
+													"    \"type\": \"object\",\r",
+													"    \"properties\": {\r",
+													"        \"message\": { \"type\": \"string\" }\r",
+													"    },\r",
+													"    \"required\": [\"message\"]\r",
+													"};\r",
+													"\r",
+													"// Get the response body as JSON\r",
+													"var response = pm.response.json();\r",
+													"\r",
+													"// Validate the response body against the schema\r",
+													"pm.test('Schema is valid', function () {\r",
+													"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Status code name is Bad Request\", function () {\r",
+													"    pm.response.to.have.status(\"Bad Request\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": \"Automation Testing\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{Base_url}}/api/v1/tasks/{{task_id}}",
+											"host": [
+												"{{Base_url}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"tasks",
+												"{{task_id}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GetTasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"/*************Test Cases************/\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// pm.test(\"Check item Name\", function () {\r",
+											"//     var jsonData = pm.response.json();\r",
+											"//     pm.expect(jsonData.item).to.eql(\"Automation Testing\");\r",
+											"// });\r",
+											"\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"// Define the expected schema\r",
+											"var schema = {\r",
+											"    \"type\": \"object\",\r",
+											"    \"properties\": {\r",
+											"        \"tasks\": {\r",
+											"            \"type\": \"array\",\r",
+											"            \"items\": {\r",
+											"                \"type\": \"object\",\r",
+											"                \"properties\": {\r",
+											"                    \"isCompleted\": { \"type\": \"boolean\" },\r",
+											"                    \"_id\": { \"type\": \"string\" },\r",
+											"                    \"item\": { \"type\": \"string\" },\r",
+											"                    \"userID\": { \"type\": \"string\" },\r",
+											"                    \"createdAt\": { \"type\": \"string\", \"format\": \"date-time\" },\r",
+											"                    \"__v\": { \"type\": \"integer\" }\r",
+											"                },\r",
+											"                \"required\": [\"isCompleted\", \"_id\", \"item\", \"userID\", \"createdAt\", \"__v\"]\r",
+											"            }\r",
+											"        }\r",
+											"    },\r",
+											"    \"required\": [\"tasks\"]\r",
+											"};\r",
+											"\r",
+											"// Get the response body as JSON\r",
+											"var response = pm.response.json();\r",
+											"\r",
+											"// Validate the response body against the schema\r",
+											"pm.test('Schema is valid', function () {\r",
+											"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name is OK\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Base_url}}/api/v1/tasks",
+									"host": [
+										"{{Base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"/*************Test Cases************/\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Check item Name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.item).to.eql(pm.environment.get(\"task_name\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"// Define the expected schema\r",
+											"var schema = {\r",
+											"    \"type\": \"object\",\r",
+											"    \"properties\": {\r",
+											"        \"isCompleted\": { \"type\": \"boolean\" },\r",
+											"        \"_id\": { \"type\": \"string\" },\r",
+											"        \"item\": { \"type\": \"string\" },\r",
+											"        \"userID\": { \"type\": \"string\" },\r",
+											"        \"createdAt\": { \"type\": \"string\" },\r",
+											"        \"__v\": { \"type\": \"integer\" }\r",
+											"    },\r",
+											"    \"required\": [\"isCompleted\", \"_id\", \"item\", \"userID\", \"createdAt\", \"__v\"]\r",
+											"};\r",
+											"\r",
+											"// Get the response body as JSON\r",
+											"var response = pm.response.json();\r",
+											"\r",
+											"// Validate the response body against the schema\r",
+											"pm.test('Schema is valid', function () {\r",
+											"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name is OK\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{Base_url}}/api/v1/tasks/{{task_id}}",
+									"host": [
+										"{{Base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"tasks",
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete_notExisting_Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"/*************Test Cases************/\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Check item Name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"We could not find the task in our database\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"// Define the expected schema\r",
+											"var schema = {\r",
+											"    \"type\": \"object\",\r",
+											"    \"properties\": {\r",
+											"        \"message\": { \"type\": \"string\" },\r",
+											"    },\r",
+											"    \"required\": [\"message\"]\r",
+											"};\r",
+											"\r",
+											"// Get the response body as JSON\r",
+											"var response = pm.response.json();\r",
+											"\r",
+											"// Validate the response body against the schema\r",
+											"pm.test('Schema is valid', function () {\r",
+											"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name is Bad Request\", function () {\r",
+											"    pm.response.to.have.status(\"Bad Request\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{Base_url}}/api/v1/tasks/66224da629bead00149d1530",
+									"host": [
+										"{{Base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"tasks",
+										"66224da629bead00149d1530"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Tasks without Auth",
+					"item": [
+						{
+							"name": "GetTasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"task_id\", data._id);\r",
+											"\r",
+											"/*************Test Cases************/\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Check item Name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Unauthorized, please insert a correct token\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"// Define the expected schema\r",
+											"var schema = {\r",
+											"    \"type\": \"object\",\r",
+											"    \"properties\": {\r",
+											"        \"message\": { \"type\": \"string\" }\r",
+											"    },\r",
+											"    \"required\": [\"message\"]\r",
+											"};\r",
+											"\r",
+											"// Get the response body as JSON\r",
+											"var response = pm.response.json();\r",
+											"\r",
+											"// Validate the response body against the schema\r",
+											"pm.test('Schema is valid', function () {\r",
+											"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name is Unauthorized\", function () {\r",
+											"    pm.response.to.have.status(\"Unauthorized\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Base_url}}/api/v1/tasks",
+									"host": [
+										"{{Base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"task_id\", data._id);\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"task_id\", data._id);\r",
+											"\r",
+											"/*************Test Cases************/\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Check item Name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Unauthorized, please insert a correct token\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"// Define the expected schema\r",
+											"var schema = {\r",
+											"    \"type\": \"object\",\r",
+											"    \"properties\": {\r",
+											"        \"message\": { \"type\": \"string\" }\r",
+											"    },\r",
+											"    \"required\": [\"message\"]\r",
+											"};\r",
+											"\r",
+											"// Get the response body as JSON\r",
+											"var response = pm.response.json();\r",
+											"\r",
+											"// Validate the response body against the schema\r",
+											"pm.test('Schema is valid', function () {\r",
+											"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name is Unauthorized\", function () {\r",
+											"    pm.response.to.have.status(\"Unauthorized\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"item\": \"Automation Testing\",\r\n    \"isCompleted\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Base_url}}/api/v1/tasks",
+									"host": [
+										"{{Base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CompleteTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"task_id\", data._id);\r",
+											"\r",
+											"/*************Test Cases************/\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Check item Name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Unauthorized, please insert a correct token\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"// Define the expected schema\r",
+											"var schema = {\r",
+											"    \"type\": \"object\",\r",
+											"    \"properties\": {\r",
+											"        \"message\": { \"type\": \"string\" }\r",
+											"    },\r",
+											"    \"required\": [\"message\"]\r",
+											"};\r",
+											"\r",
+											"// Get the response body as JSON\r",
+											"var response = pm.response.json();\r",
+											"\r",
+											"// Validate the response body against the schema\r",
+											"pm.test('Schema is valid', function () {\r",
+											"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name is Unauthorized\", function () {\r",
+											"    pm.response.to.have.status(\"Unauthorized\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"item\": \"API practise\",\r\n    \"isCompleted\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Base_url}}/api/v1/tasks/{{task_id}}",
+									"host": [
+										"{{Base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"tasks",
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"task_id\", data._id);\r",
+											"\r",
+											"/*************Test Cases************/\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Check item Name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Unauthorized, please insert a correct token\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"// Define the expected schema\r",
+											"var schema = {\r",
+											"    \"type\": \"object\",\r",
+											"    \"properties\": {\r",
+											"        \"message\": { \"type\": \"string\" }\r",
+											"    },\r",
+											"    \"required\": [\"message\"]\r",
+											"};\r",
+											"\r",
+											"// Get the response body as JSON\r",
+											"var response = pm.response.json();\r",
+											"\r",
+											"// Validate the response body against the schema\r",
+											"pm.test('Schema is valid', function () {\r",
+											"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name is Unauthorized\", function () {\r",
+											"    pm.response.to.have.status(\"Unauthorized\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{Base_url}}/api/v1/tasks/{{task_id}}",
+									"host": [
+										"{{Base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"tasks",
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
